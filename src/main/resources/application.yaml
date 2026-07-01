@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: Insurance platform
+
+security:
+  secret: jqC21qTiEa0pc1lUEmhBlq4qpoNcoALzs3AXymHJouZ
+  expiration: 86400000
