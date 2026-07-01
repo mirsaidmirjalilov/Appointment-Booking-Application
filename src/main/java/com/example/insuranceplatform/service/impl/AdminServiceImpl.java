@@ -1,5 +1,7 @@
 package com.example.insuranceplatform.service.impl;
 
+import com.example.insuranceplatform.entity.Doctor;
+import com.example.insuranceplatform.entity.User;
 import com.example.insuranceplatform.mapper.AppointmentMapper;
 import com.example.insuranceplatform.mapper.MedicalRecordMapper;
 import com.example.insuranceplatform.mapper.UserMapper;
@@ -37,26 +39,36 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional
     public void deactivateUser(Long userId) {
-        userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User not found")).setActive(false);
+        User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        user.setActive(false);
+        userRepository.save(user);
     }
 
     @Override
     @Transactional
     public void activateUser(Long userId) {
-        userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User not found")).setActive(true);
-    }
+        User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        user.setActive(true);
+        userRepository.save(user);}
 
     @Override
     @Transactional
     public void deactivateDoctor(Long doctorId) {
-        doctorRepository.findById(doctorId).orElseThrow(() -> new UsernameNotFoundException("Doctor not found")).setIsActive(false);
+        Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(() -> new UsernameNotFoundException("Doctor not found"));
+
+        doctor.setIsActive(false);
+        doctorRepository.save(doctor);
     }
 
     @Override
     @Transactional
     public void activateDoctor(Long doctorId) {
-        doctorRepository.findById(doctorId).orElseThrow(() -> new UsernameNotFoundException("Doctor not found")).setIsActive(true);
-    }
+        Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(() -> new UsernameNotFoundException("Doctor not found"));
+
+        doctor.setIsActive(true);
+        doctorRepository.save(doctor); }
 
     @Override
     public Page<AppointmentResponse> getAllAppointments(Pageable pageable) {
