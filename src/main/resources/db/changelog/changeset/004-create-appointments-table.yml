@@ -1,0 +1,108 @@
+databaseChangeLog:
+  - changeSet:
+      id: 4
+      author: system
+      changes:
+        - createTable:
+            tableName: appointments
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: patient_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: doctor_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: appointment_date_time
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: duration_minutes
+                  type: INT
+                  defaultValueNumeric: 30
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: reason_for_visit
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: notes
+                  type: TEXT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_by
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: appointments
+            baseColumnNames: patient_id
+            constraintName: fk_appointments_patient_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: RESTRICT
+            onUpdate: RESTRICT
+        - addForeignKeyConstraint:
+            baseTableName: appointments
+            baseColumnNames: doctor_id
+            constraintName: fk_appointments_doctor_id
+            referencedTableName: doctors
+            referencedColumnNames: id
+            onDelete: RESTRICT
+            onUpdate: RESTRICT
+        - addCheckConstraint:
+            constraintName: ck_appointments_status
+            tableName: appointments
+        - createIndex:
+            tableName: appointments
+            indexName: idx_appointments_patient_id
+            columns:
+              - column:
+                  name: patient_id
+        - createIndex:
+            tableName: appointments
+            indexName: idx_appointments_doctor_id
+            columns:
+              - column:
+                  name: doctor_id
+        - createIndex:
+            tableName: appointments
+            indexName: idx_appointments_appointment_date_time
+            columns:
+              - column:
+                  name: appointment_date_time

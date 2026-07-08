@@ -1,0 +1,84 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3
+      author: system
+      changes:
+        - createTable:
+            tableName: doctor_availability
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: doctor_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: day_of_week
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_time
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_time
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: slot_duration_minutes
+                  type: INT
+                  defaultValueNumeric: 30
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_active
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_by
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: doctor_availability
+            baseColumnNames: doctor_id
+            constraintName: fk_doctor_availability_doctor_id
+            referencedTableName: doctors
+            referencedColumnNames: id
+            onDelete: RESTRICT
+            onUpdate: RESTRICT
+        - addCheckConstraint:
+            constraintName: ck_doctor_availability_day_of_week
+            tableName: doctor_availability
+        - createIndex:
+            tableName: doctor_availability
+            indexName: idx_doctor_availability_doctor_id
+            columns:
+              - column:
+                  name: doctor_id

@@ -1,0 +1,106 @@
+databaseChangeLog:
+  - changeSet:
+      id: 6
+      author: system
+      changes:
+        - createTable:
+            tableName: reviews
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: appointment_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: patient_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: doctor_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: rating
+                  type: INT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: comment
+                  type: TEXT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_by
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: reviews
+            baseColumnNames: appointment_id
+            constraintName: fk_reviews_appointment_id
+            referencedTableName: appointments
+            referencedColumnNames: id
+            onDelete: RESTRICT
+            onUpdate: RESTRICT
+        - addForeignKeyConstraint:
+            baseTableName: reviews
+            baseColumnNames: patient_id
+            constraintName: fk_reviews_patient_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: RESTRICT
+            onUpdate: RESTRICT
+        - addForeignKeyConstraint:
+            baseTableName: reviews
+            baseColumnNames: doctor_id
+            constraintName: fk_reviews_doctor_id
+            referencedTableName: doctors
+            referencedColumnNames: id
+            onDelete: RESTRICT
+            onUpdate: RESTRICT
+        - addCheckConstraint:
+            constraintName: ck_reviews_rating
+            tableName: reviews
+        - createIndex:
+            tableName: reviews
+            indexName: idx_reviews_appointment_id
+            columns:
+              - column:
+                  name: appointment_id
+        - createIndex:
+            tableName: reviews
+            indexName: idx_reviews_patient_id
+            columns:
+              - column:
+                  name: patient_id
+        - createIndex:
+            tableName: reviews
+            indexName: idx_reviews_doctor_id
+            columns:
+              - column:
+                  name: doctor_id

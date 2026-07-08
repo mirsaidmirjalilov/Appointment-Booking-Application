@@ -1,0 +1,113 @@
+databaseChangeLog:
+  - changeSet:
+      id: 5
+      author: system
+      changes:
+        - createTable:
+            tableName: medical_records
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: appointment_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: patient_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: doctor_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: diagnosis
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: prescription
+                  type: TEXT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: recommendations
+                  type: TEXT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: follow_up_date
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: true
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_by
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: medical_records
+            baseColumnNames: appointment_id
+            constraintName: fk_medical_records_appointment_id
+            referencedTableName: appointments
+            referencedColumnNames: id
+            onDelete: RESTRICT
+            onUpdate: RESTRICT
+        - addForeignKeyConstraint:
+            baseTableName: medical_records
+            baseColumnNames: patient_id
+            constraintName: fk_medical_records_patient_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: RESTRICT
+            onUpdate: RESTRICT
+        - addForeignKeyConstraint:
+            baseTableName: medical_records
+            baseColumnNames: doctor_id
+            constraintName: fk_medical_records_doctor_id
+            referencedTableName: doctors
+            referencedColumnNames: id
+            onDelete: RESTRICT
+            onUpdate: RESTRICT
+        - createIndex:
+            tableName: medical_records
+            indexName: idx_medical_records_appointment_id
+            columns:
+              - column:
+                  name: appointment_id
+        - createIndex:
+            tableName: medical_records
+            indexName: idx_medical_records_patient_id
+            columns:
+              - column:
+                  name: patient_id
+        - createIndex:
+            tableName: medical_records
+            indexName: idx_medical_records_doctor_id
+            columns:
+              - column:
+                  name: doctor_id

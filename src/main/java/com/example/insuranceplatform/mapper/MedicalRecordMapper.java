@@ -1,6 +1,7 @@
 package com.example.insuranceplatform.mapper;
 
 import com.example.insuranceplatform.entity.MedicalRecord;
+import com.example.insuranceplatform.payload.medical_record.MedicalRecordRequest;
 import com.example.insuranceplatform.payload.medical_record.MedicalRecordResponse;
 import org.springframework.stereotype.Component;
 

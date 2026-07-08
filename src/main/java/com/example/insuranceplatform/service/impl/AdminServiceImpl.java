@@ -3,9 +3,12 @@ package com.example.insuranceplatform.service.impl;
 import com.example.insuranceplatform.entity.Doctor;
 import com.example.insuranceplatform.entity.User;
 import com.example.insuranceplatform.mapper.AppointmentMapper;
+import com.example.insuranceplatform.mapper.DoctorMapper;
 import com.example.insuranceplatform.mapper.MedicalRecordMapper;
 import com.example.insuranceplatform.mapper.UserMapper;
 import com.example.insuranceplatform.payload.appointment.AppointmentResponse;
+import com.example.insuranceplatform.payload.doctor.DoctorRequest;
+import com.example.insuranceplatform.payload.doctor.DoctorResponse;
 import com.example.insuranceplatform.payload.medical_record.MedicalRecordResponse;
 import com.example.insuranceplatform.payload.user.UserResponse;
 import com.example.insuranceplatform.repository.AppointmentRepository;
@@ -13,6 +16,7 @@ import com.example.insuranceplatform.repository.DoctorRepository;
 import com.example.insuranceplatform.repository.MedicalRecordRepository;
 import com.example.insuranceplatform.repository.UserRepository;
 import com.example.insuranceplatform.service.AdminService;
+import com.example.insuranceplatform.util.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +34,7 @@ public class AdminServiceImpl implements AdminService {
     private final AppointmentMapper appointmentMapper;
     private final MedicalRecordMapper medicalRecordMapper;
     private final MedicalRecordRepository medicalRecordRepository;
+    private final DoctorMapper doctorMapper;
 
     @Override
     public Page<UserResponse> getAllUsers(Pageable pageable) {
@@ -78,5 +83,27 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Page<MedicalRecordResponse> getAllMedicalRecords(Pageable pageable) {
         return medicalRecordRepository.findAll(pageable).map(medicalRecordMapper::toMedicalRecordResponse);
+    }
+
+    @Override
+    public DoctorResponse createDoctor(Long userId, DoctorRequest doctorRequest) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        if (user.getRole() != UserRole.DOCTOR) {
+            throw new RuntimeException("Doctor is not allowed to be created");
+        }
+
+        Doctor doctor = Doctor.builder()
+                .user(user)
+                .bio(doctorRequest.bio())
+                .isActive(true)
+                .consultationFee(doctorRequest.consultationFee())
+                .licenseNumber(String.valueOf(doctorRequest.licenseNumber()))
+                .specialization(String.valueOf(doctorRequest.specialization()))
+                .yearsOfExperience(doctorRequest.yearsOfExperience())
+                .build();
+        doctorRepository.save(doctor);
+
+        return doctorMapper.toDoctorResponse(doctor);
     }
 }

@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - include:
+      file: 01-create-users.yml
+      relativeToChangelogFile: true
+  - include:
+      file: 02-create-doctors.yml
+      relativeToChangelogFile: true
+  - include:
+      file: 03-create-doctor-availability.yml
+      relativeToChangelogFile: true
+  - include:
+      file: 04-create-appointments.yml
+      relativeToChangelogFile: true
+  - include:
+      file: 05-create-medical-records.yml
+      relativeToChangelogFile: true
+  - include:
+      file: 06-create-reviews.yml
+      relativeToChangelogFile: true

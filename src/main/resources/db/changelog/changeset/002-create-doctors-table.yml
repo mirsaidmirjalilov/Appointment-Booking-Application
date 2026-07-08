@@ -1,0 +1,93 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2
+      author: system
+      changes:
+        - createTable:
+            tableName: doctors
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: specialization
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: license_number
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: bio
+                  type: TEXT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: consultation_fee
+                  type: DOUBLE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: years_of_experience
+                  type: INT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: is_active
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_by
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: doctors
+            baseColumnNames: user_id
+            constraintName: fk_doctors_user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: RESTRICT
+            onUpdate: RESTRICT
+        - createIndex:
+            tableName: doctors
+            indexName: idx_doctors_user_id
+            columns:
+              - column:
+                  name: user_id
+        - createIndex:
+            tableName: doctors
+            indexName: idx_doctors_license_number
+            columns:
+              - column:
+                  name: license_number
