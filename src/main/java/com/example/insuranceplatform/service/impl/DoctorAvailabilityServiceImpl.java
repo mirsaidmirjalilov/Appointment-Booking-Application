@@ -11,6 +11,8 @@ import com.example.insuranceplatform.repository.DoctorAvailabilityRepository;
 import com.example.insuranceplatform.repository.DoctorRepository;
 import com.example.insuranceplatform.service.DoctorAvailabilityService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +32,7 @@ public class DoctorAvailabilityServiceImpl implements DoctorAvailabilityService 
 
     @Override
     @Transactional
+    @CacheEvict(value = "doctorAvailability",key = "#doctorId")
     public AvailabilityResponse setAvailability(Long doctorId, AvailabilityRequest request) {
         Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(() -> new UsernameNotFoundException("Doctor Id not found"));
 
@@ -48,11 +51,13 @@ public class DoctorAvailabilityServiceImpl implements DoctorAvailabilityService 
     }
 
     @Override
-    public List<AvailabilityResponse> getAvailability(Long doctorId) {
-        return doctorAvailabilityRepository.findAll().stream().map(doctorAvailabilityMapper::toResponse).toList();
+    @Cacheable(value = "doctorAvailability", key = "#doctorId")
+    public List<AvailabilityResponse> getAvailabilityForDoctor(Long doctorId) {
+        return doctorAvailabilityRepository.findAllByDoctorId(doctorId).stream().map(doctorAvailabilityMapper::toResponse).toList();
     }
 
     @Override
+    @Cacheable(value = "availableSlots", key = "#doctorId + '_' + #date")
     public List<LocalTime> getAvailableSlots(Long doctorId, LocalDate date) {
         DoctorAvailability availability = doctorAvailabilityRepository
                 .findByDoctorIdAndDayOfWeek(doctorId, date.getDayOfWeek())
@@ -81,6 +86,7 @@ public class DoctorAvailabilityServiceImpl implements DoctorAvailabilityService 
 
     @Override
     @Transactional
+    @CacheEvict(value = "doctorAvailability",key = "#doctorId")
     public void deleteAvailability(Long doctorId) {
         DoctorAvailability doctorAvailability = doctorAvailabilityRepository.findByDoctorId(doctorId).orElseThrow(() -> new AvailabilityNotFoundException("Availability Id not found"));
 

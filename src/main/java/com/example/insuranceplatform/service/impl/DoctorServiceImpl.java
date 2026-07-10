@@ -10,6 +10,8 @@ import com.example.insuranceplatform.repository.UserRepository;
 import com.example.insuranceplatform.service.DoctorService;
 import com.example.insuranceplatform.util.UserRole;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,6 +31,7 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
+    @Cacheable(value = "doctorById", key = "#id")
     public DoctorResponse getDoctorById(Long id) {
         return doctorRepository.findById(id).map(doctorMapper::toDoctorResponse).orElseThrow(() -> new UsernameNotFoundException("doctor not found"));
     }
@@ -50,6 +53,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "doctorById", key = "#doctorId")
     public DoctorResponse updateDoctorProfile(Long doctorId, DoctorRequest request) {
         Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(() -> new UsernameNotFoundException("doctor not found"));
 

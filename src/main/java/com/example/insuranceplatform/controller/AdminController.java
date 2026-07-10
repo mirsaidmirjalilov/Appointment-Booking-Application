@@ -9,6 +9,7 @@ import com.example.insuranceplatform.payload.user.UserResponse;
 import com.example.insuranceplatform.service.AdminService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -30,28 +31,32 @@ public class AdminController {
     }
 
     @PatchMapping("/users/{userId}/deactivate")
-    public ResponseEntity<BaseResponse<Page<UserResponse>>> deactivateUser(@PathVariable Long userId){
+    @CacheEvict(value = "userById", key = "#userId")
+    public ResponseEntity<BaseResponse> deactivateUser(@PathVariable Long userId){
         adminService.deactivateUser(userId);
 
         return ResponseEntity.status(200).body(BaseResponse.ok());
     }
 
     @PatchMapping("/users/{userId}/activate")
-    public ResponseEntity<BaseResponse<Page<UserResponse>>> activateUser(@PathVariable Long userId){
+    @CacheEvict(value = "userById", key = "#userId")
+    public ResponseEntity<BaseResponse> activateUser(@PathVariable Long userId){
         adminService.activateUser(userId);
 
         return ResponseEntity.status(200).body(BaseResponse.ok());
     }
 
     @PatchMapping("/doctors/{doctorId}/activate")
-    public ResponseEntity<BaseResponse<Page<UserResponse>>> activateDoctor(@PathVariable Long doctorId){
+    @CacheEvict(value = "doctorById", key = "#doctorId")
+    public ResponseEntity<BaseResponse> activateDoctor(@PathVariable Long doctorId){
         adminService.activateDoctor(doctorId);
 
         return ResponseEntity.status(200).body(BaseResponse.ok());
     }
 
     @PatchMapping("/doctors/{doctorId}/deactivate")
-    public ResponseEntity<BaseResponse<Page<UserResponse>>> deactivateDoctor(@PathVariable Long doctorId){
+    @CacheEvict(value = "doctorById", key = "#doctorId")
+    public ResponseEntity<BaseResponse> deactivateDoctor(@PathVariable Long doctorId){
         adminService.deactivateDoctor(doctorId);
 
         return ResponseEntity.status(200).body(BaseResponse.ok());

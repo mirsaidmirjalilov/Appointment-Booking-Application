@@ -4,6 +4,8 @@ import com.example.insuranceplatform.entity.MedicalRecord;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -13,7 +15,13 @@ public interface MedicalRecordRepository extends JpaRepository<MedicalRecord,Lon
 
     boolean existsMedicalRecordByAppointmentId(Long appointmentId);
 
-    Optional<MedicalRecord> findByAppointmentIdAndPatientId(Long appointmentId, Long patientId);
+    @Query("SELECT m FROM MedicalRecord m " +
+            "WHERE m.appointment.id = :appointmentId " +
+            "AND (m.patient.id = :requesterId OR m.doctor.user.id = :requesterId)")
+    Optional<MedicalRecord> findByAppointmentIdAndRequester(
+            @Param("appointmentId") Long appointmentId,
+            @Param("requesterId") Long requesterId
+    );
 
     Page<MedicalRecord> findByPatientId(Long patientId, Pageable pageable);
 }

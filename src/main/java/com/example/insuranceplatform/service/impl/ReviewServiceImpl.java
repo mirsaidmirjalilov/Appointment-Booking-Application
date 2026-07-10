@@ -10,6 +10,7 @@ import com.example.insuranceplatform.repository.AppointmentRepository;
 import com.example.insuranceplatform.repository.ReviewRepository;
 import com.example.insuranceplatform.service.ReviewService;
 import com.example.insuranceplatform.util.AppointmentStatus;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final AppointmentRepository appointmentRepository;
 
     @Override
+    @Transactional
     public ReviewResponse createReview(ReviewRequest request, Long patientId) {
         Appointment appointment = appointmentRepository.findById(request.appointmentId()).orElseThrow(() -> new AppointmentNotFoundException("appointment not found"));
 

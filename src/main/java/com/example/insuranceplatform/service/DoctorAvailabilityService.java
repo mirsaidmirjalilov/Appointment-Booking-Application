@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface DoctorAvailabilityService {
     AvailabilityResponse setAvailability(Long doctorId, AvailabilityRequest request);
-    List<AvailabilityResponse> getAvailability(Long doctorId);
+    List<AvailabilityResponse> getAvailabilityForDoctor(Long doctorId);
     List<LocalTime> getAvailableSlots(Long doctorId, LocalDate date);
     void deleteAvailability(Long doctorId);
 }
