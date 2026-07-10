@@ -1,19 +1,19 @@
 databaseChangeLog:
   - include:
-      file: 01-create-users.yml
+      file: 001-create-users-table.yml
       relativeToChangelogFile: true
   - include:
-      file: 02-create-doctors.yml
+      file: 002-create-doctors-table.yml
       relativeToChangelogFile: true
   - include:
-      file: 03-create-doctor-availability.yml
+      file: 003-create-doctor-availability-table.yml
       relativeToChangelogFile: true
   - include:
-      file: 04-create-appointments.yml
+      file: 004-create-appointments-table.yml
       relativeToChangelogFile: true
   - include:
-      file: 05-create-medical-records.yml
+      file: 005-create-medical-records-table.yml
       relativeToChangelogFile: true
   - include:
-      file: 06-create-reviews.yml
+      file: 006-create-reviews-table.yml
       relativeToChangelogFile: true

@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>Insurance-platform</artifactId>
+    <artifactId>Appointment-Booking-Application</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Insurance platform</name>
     <description>Insurance platform</description>

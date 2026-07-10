@@ -44,10 +44,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @EnableJpaRepositories
 @EnableWebSecurity
 @EnableCaching
-public class InsurancePlatformApplication {
+public class AppointmentBookingApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(InsurancePlatformApplication.class, args);
+        SpringApplication.run(AppointmentBookingApplication.class, args);
     }
 
 }
