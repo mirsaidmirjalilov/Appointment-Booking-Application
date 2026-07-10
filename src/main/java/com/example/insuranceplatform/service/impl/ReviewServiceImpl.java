@@ -2,6 +2,7 @@ package com.example.insuranceplatform.service.impl;
 
 import com.example.insuranceplatform.entity.Appointment;
 import com.example.insuranceplatform.entity.Review;
+import com.example.insuranceplatform.exception.AppointmentNotFoundException;
 import com.example.insuranceplatform.mapper.ReviewMapper;
 import com.example.insuranceplatform.payload.review.ReviewRequest;
 import com.example.insuranceplatform.payload.review.ReviewResponse;
@@ -23,7 +24,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ReviewResponse createReview(ReviewRequest request, Long patientId) {
-        Appointment appointment = appointmentRepository.findById(request.appointmentId()).orElseThrow(() -> new RuntimeException("appointment not found"));
+        Appointment appointment = appointmentRepository.findById(request.appointmentId()).orElseThrow(() -> new AppointmentNotFoundException("appointment not found"));
 
         if (!appointment.getPatient().getId().equals(patientId)) {
             throw new RuntimeException("appointment does not belong to patient");

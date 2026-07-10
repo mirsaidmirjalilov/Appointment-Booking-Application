@@ -10,6 +10,7 @@ import com.example.insuranceplatform.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(email, password);
         authenticationManager.authenticate(usernamePasswordAuthenticationToken);
         String token = jwtTokenUtil.generateToken(email);
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return new AuthResponse(token, user.getRole());
     }
 

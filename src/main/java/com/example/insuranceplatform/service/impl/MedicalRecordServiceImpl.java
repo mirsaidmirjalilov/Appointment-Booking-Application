@@ -2,6 +2,7 @@ package com.example.insuranceplatform.service.impl;
 
 import com.example.insuranceplatform.entity.Appointment;
 import com.example.insuranceplatform.entity.MedicalRecord;
+import com.example.insuranceplatform.exception.AppointmentNotFoundException;
 import com.example.insuranceplatform.mapper.MedicalRecordMapper;
 import com.example.insuranceplatform.payload.medical_record.MedicalRecordRequest;
 import com.example.insuranceplatform.payload.medical_record.MedicalRecordResponse;
@@ -12,6 +13,7 @@ import com.example.insuranceplatform.util.AppointmentStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +31,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
         if (exists) throw new RuntimeException("Appointment with id: " + appointmentId + " already exists");
 
-        Appointment appointment = appointmentRepository.findById(appointmentId).orElseThrow(() -> new RuntimeException("Appointment with id: " + appointmentId + " does not exist"));
+        Appointment appointment = appointmentRepository.findById(appointmentId).orElseThrow(() -> new AppointmentNotFoundException("Appointment with id: " + appointmentId + " does not exist"));
 
         if (appointment.getStatus() != AppointmentStatus.COMPLETED)
             throw new RuntimeException("Appointment with id: " + appointmentId + " has not been completed");
@@ -50,12 +52,12 @@ public class MedicalRecordServiceImpl implements MedicalRecordService {
 
     @Override
     public MedicalRecordResponse getRecordByAppointmentId(Long appointmentId, Long requesterId) {
-        MedicalRecord medicalRecord = medicalRecordRepository.findByAppointmentIdAndPatientId(appointmentId, requesterId).orElseThrow(() -> new RuntimeException("Appointment with id: " + appointmentId + " does not exist"));
+        MedicalRecord medicalRecord = medicalRecordRepository.findByAppointmentIdAndPatientId(appointmentId, requesterId).orElseThrow(() -> new AppointmentNotFoundException("Appointment with id: " + appointmentId + " does not exist"));
 
         boolean isPatient = medicalRecord.getPatient().getId().equals(requesterId);
         boolean isDoctor = medicalRecord.getDoctor().getUser().getId().equals(requesterId);
 
-        if (!isPatient && !isDoctor) throw new RuntimeException("Access denied");
+        if (!isPatient && !isDoctor) throw new AccessDeniedException("Access denied");
 
         return medicalRecordMapper.toMedicalRecordResponse(medicalRecord);
     }

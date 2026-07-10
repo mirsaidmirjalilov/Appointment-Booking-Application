@@ -3,6 +3,7 @@ package com.example.insuranceplatform.service.impl;
 import com.example.insuranceplatform.entity.Appointment;
 import com.example.insuranceplatform.entity.Doctor;
 import com.example.insuranceplatform.entity.User;
+import com.example.insuranceplatform.exception.AppointmentNotFoundException;
 import com.example.insuranceplatform.mapper.AppointmentMapper;
 import com.example.insuranceplatform.payload.appointment.AppointmentRequest;
 import com.example.insuranceplatform.payload.appointment.AppointmentResponse;
@@ -14,7 +15,7 @@ import com.example.insuranceplatform.util.AppointmentStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Component;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,8 +33,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         boolean exists = appointmentRepository
                 .existsByDoctorIdAndAppointmentDateTime(request.doctorId(), request.appointmentDateTime());
         if (exists) throw new RuntimeException("Slot already booked");
-        User user = userRepository.findById(patientId).orElseThrow(() -> new RuntimeException("Patient not found"));
-        Doctor doctor = doctorRepository.findById(request.doctorId()).orElseThrow(() -> new RuntimeException("Doctor not found"));
+        User user = userRepository.findById(patientId).orElseThrow(() -> new UsernameNotFoundException("Patient not found"));
+        Doctor doctor = doctorRepository.findById(request.doctorId()).orElseThrow(() -> new UsernameNotFoundException("Doctor not found"));
 
         Appointment appointment = appointmentMapper.toEntity(request, user, doctor);
 
@@ -71,7 +72,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     private AppointmentResponse changeAppointmentStatus(Long appointmentId, AppointmentStatus confirmed) {
-        Appointment appointment = appointmentRepository.findById(appointmentId).orElseThrow(() -> new RuntimeException("Appointment not found"));
+        Appointment appointment = appointmentRepository.findById(appointmentId).orElseThrow(() -> new AppointmentNotFoundException("Appointment not found"));
 
         appointment.setStatus(confirmed);
         appointmentRepository.save(appointment);

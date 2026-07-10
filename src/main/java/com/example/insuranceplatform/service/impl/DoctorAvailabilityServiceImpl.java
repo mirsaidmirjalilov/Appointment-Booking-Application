@@ -2,6 +2,7 @@ package com.example.insuranceplatform.service.impl;
 
 import com.example.insuranceplatform.entity.Doctor;
 import com.example.insuranceplatform.entity.DoctorAvailability;
+import com.example.insuranceplatform.exception.AvailabilityNotFoundException;
 import com.example.insuranceplatform.mapper.DoctorAvailabilityMapper;
 import com.example.insuranceplatform.payload.doctor_availability.AvailabilityRequest;
 import com.example.insuranceplatform.payload.doctor_availability.AvailabilityResponse;
@@ -10,6 +11,7 @@ import com.example.insuranceplatform.repository.DoctorAvailabilityRepository;
 import com.example.insuranceplatform.repository.DoctorRepository;
 import com.example.insuranceplatform.service.DoctorAvailabilityService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +31,7 @@ public class DoctorAvailabilityServiceImpl implements DoctorAvailabilityService 
     @Override
     @Transactional
     public AvailabilityResponse setAvailability(Long doctorId, AvailabilityRequest request) {
-        Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(() -> new IllegalArgumentException("Doctor Id not found"));
+        Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(() -> new UsernameNotFoundException("Doctor Id not found"));
 
         DoctorAvailability availability = doctorAvailabilityRepository
                 .findByDoctorIdAndDayOfWeek(doctorId, request.dayOfWeek())
@@ -54,7 +56,7 @@ public class DoctorAvailabilityServiceImpl implements DoctorAvailabilityService 
     public List<LocalTime> getAvailableSlots(Long doctorId, LocalDate date) {
         DoctorAvailability availability = doctorAvailabilityRepository
                 .findByDoctorIdAndDayOfWeek(doctorId, date.getDayOfWeek())
-                .orElseThrow(() -> new RuntimeException("No availability for this day"));
+                .orElseThrow(() -> new AvailabilityNotFoundException("No availability for this day"));
 
         List<LocalTime> allSlots = new ArrayList<>();
         LocalTime current = LocalTime.from(availability.getStartTime());
@@ -80,7 +82,7 @@ public class DoctorAvailabilityServiceImpl implements DoctorAvailabilityService 
     @Override
     @Transactional
     public void deleteAvailability(Long doctorId) {
-        DoctorAvailability doctorAvailability = doctorAvailabilityRepository.findByDoctorId(doctorId).orElseThrow(() -> new IllegalArgumentException("Availability Id not found"));
+        DoctorAvailability doctorAvailability = doctorAvailabilityRepository.findByDoctorId(doctorId).orElseThrow(() -> new AvailabilityNotFoundException("Availability Id not found"));
 
         doctorAvailability.setIsActive(false);
         doctorAvailabilityRepository.save(doctorAvailability);

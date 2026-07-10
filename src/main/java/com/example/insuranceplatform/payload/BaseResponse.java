@@ -7,14 +7,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record BaseResponse<T>(
         T data,
-        ErrorResponse errorResponse,
         Boolean success
 ) {
     public static <T> BaseResponse<T> ok(T data) {
-        return new BaseResponse<>(data, null, true);
+        return new BaseResponse<>(data, true);
     }
 
     public static <T> BaseResponse<T> ok() {
-        return new BaseResponse<>(null, null, true);
+        return new BaseResponse<>(null,  true);
     }
 }

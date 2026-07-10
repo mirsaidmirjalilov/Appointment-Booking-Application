@@ -12,6 +12,7 @@ import com.example.insuranceplatform.util.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,13 +30,13 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public DoctorResponse getDoctorById(Long id) {
-        return doctorRepository.findById(id).map(doctorMapper::toDoctorResponse).orElseThrow(() -> new RuntimeException("doctor not found"));
+        return doctorRepository.findById(id).map(doctorMapper::toDoctorResponse).orElseThrow(() -> new UsernameNotFoundException("doctor not found"));
     }
 
     @Override
     @Transactional
     public DoctorResponse createDoctorProfile(DoctorRequest request, Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("user not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("user not found"));
 
         if (user.getRole() != UserRole.DOCTOR) {
             throw new RuntimeException("user is not a doctor");
@@ -50,7 +51,7 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     @Transactional
     public DoctorResponse updateDoctorProfile(Long doctorId, DoctorRequest request) {
-        Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(() -> new RuntimeException("doctor not found"));
+        Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(() -> new UsernameNotFoundException("doctor not found"));
 
         doctor.setBio(request.bio());
         doctor.setSpecialization(request.specialization());
